@@ -23,9 +23,12 @@ public class Move : MonoBehaviour
 
     private Vector3 direction = Vector3.forward;
 
+    private Rigidbody rigidbody;
+
     // Start is called before the first frame update
     void Start()
     {
+        rigidbody = GetComponent<Rigidbody>();
         motorAudio.pitch = motorAudioPitchVsVelocity.Evaluate(velocity / maxSpeed);
     }
 
@@ -38,7 +41,7 @@ public class Move : MonoBehaviour
 
     void RotateLoop()
     {
-        if (velocity < 0.5f)
+        if (velocity is < 0.5f and > -0.5f)
         {
             return;
         }
