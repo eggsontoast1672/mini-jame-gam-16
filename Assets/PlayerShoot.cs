@@ -6,14 +6,17 @@ public class PlayerShoot : MonoBehaviour
 {
     private Animator anim;
 
-    [SerializeField] private GameObject[] enableObjects;
+    [SerializeField] private GameObject ak;
+    [SerializeField] private GameObject akPivot;
     [SerializeField] private GameObject[] disableObjects;
     [SerializeField] private GunFireEffect gunFireEffect;
+    private Camera cam;
 
     public bool weaponDrawn = true;
 
     void Start()
     {
+        cam = FindObjectOfType<Camera>();
         anim = GetComponentInChildren<Animator>();
         HideWeapon();
     }
@@ -24,6 +27,7 @@ public class PlayerShoot : MonoBehaviour
         if (Input.GetMouseButton(0))
         {
             Shoot();
+            GunFaceMouse();
         }
         if (Input.GetMouseButtonDown(0))
         {
@@ -42,10 +46,8 @@ public class PlayerShoot : MonoBehaviour
             return;
         }
         weaponDrawn = true;
-        foreach (var enableObject in enableObjects)
-        {
-            enableObject.SetActive(true);
-        }
+
+        ak.transform.localPosition = new Vector3(0, 0, 0);
 
         foreach (var disableObject in disableObjects)
         {
@@ -65,15 +67,28 @@ public class PlayerShoot : MonoBehaviour
             return;
         }
         weaponDrawn = false;
-        foreach (var enableObject in enableObjects)
-        {
-            enableObject.SetActive(false);
-        }
 
+        ak.transform.localPosition = new Vector3(-10000, -10000, -10000);
+        
         foreach (var disableObject in disableObjects)
         {
             disableObject.SetActive(true);
         }
-
     }
+
+    public void GunFaceMouse()
+    {
+        var cameraPosition = CalculateCameraPosition();
+        akPivot.transform.LookAt(cameraPosition);
+    }
+    
+    private Vector3 CalculateCameraPosition()
+    {
+        var ray = cam.ScreenPointToRay(Input.mousePosition);
+
+        var mask = LayerMask.GetMask("Floor");
+        var didHit = Physics.Raycast(ray, out var hit, 1000, mask);
+        return didHit ? hit.point : Vector3.zero;
+    }
+
 }

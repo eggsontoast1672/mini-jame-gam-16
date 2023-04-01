@@ -15,6 +15,9 @@ public class Move : MonoBehaviour
 
     [SerializeField] private float acceleration = 2;
     [SerializeField] private float breakingForce = 2;
+    [SerializeField] private AnimationCurve velocityRoationCurve;
+    [SerializeField] private AnimationCurve motorAudioPitchVsVelocity;
+    [SerializeField] private AudioSource motorAudio;
 
     [SerializeField] private Animator anim;
 
@@ -23,6 +26,7 @@ public class Move : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        motorAudio.pitch = motorAudioPitchVsVelocity.Evaluate(velocity / maxSpeed);
     }
 
     // Update is called once per frame
@@ -34,18 +38,25 @@ public class Move : MonoBehaviour
 
     void RotateLoop()
     {
+        if (velocity < 0.5f)
+        {
+            return;
+        }
         if (Input.GetButton("Horizontal"))
         {
+            var velocityRationMultiplier = velocityRoationCurve.Evaluate(velocity / maxSpeed);
+            var rotationVector = Vector3.zero;
             if (Input.GetAxisRaw("Horizontal") < 0)
             {
                 anim.CrossFade("left", 0.25f);
-                gameObject.transform.Rotate(new Vector3(0, -rotateSpeed, 0) * Time.deltaTime * (velocity / maxSpeed));
+                rotationVector = new Vector3(0, -rotateSpeed, 0);
             }
             else if (Input.GetAxisRaw("Horizontal") > 0)
             {
                 anim.CrossFade("right", 0.25f);
-                gameObject.transform.Rotate(new Vector3(0, rotateSpeed, 0) * Time.deltaTime * (velocity / maxSpeed));
+                rotationVector = new Vector3(0, rotateSpeed, 0);
             }
+            gameObject.transform.Rotate(rotationVector * Time.deltaTime * velocityRationMultiplier);
         }
         else
         {
@@ -65,6 +76,7 @@ public class Move : MonoBehaviour
             {
                 velocity = Mathf.Lerp(velocity, reverseSpeed, Time.deltaTime * breakingForce);
             }
+            motorAudio.pitch = motorAudioPitchVsVelocity.Evaluate(velocity / maxSpeed);
         }
         gameObject.transform.Translate(direction * velocity * Time.deltaTime);
     }
