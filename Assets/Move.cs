@@ -16,12 +16,13 @@ public class Move : MonoBehaviour
     [SerializeField] private float acceleration = 2;
     [SerializeField] private float breakingForce = 2;
 
+    [SerializeField] private Animator anim;
+
     private Vector3 direction = Vector3.forward;
 
     // Start is called before the first frame update
     void Start()
     {
-
     }
 
     // Update is called once per frame
@@ -37,12 +38,18 @@ public class Move : MonoBehaviour
         {
             if (Input.GetAxisRaw("Horizontal") < 0)
             {
+                anim.CrossFade("left", 0.25f);
                 gameObject.transform.Rotate(new Vector3(0, -rotateSpeed, 0) * Time.deltaTime * (velocity / maxSpeed));
             }
-            if (Input.GetAxisRaw("Horizontal") > 0)
+            else if (Input.GetAxisRaw("Horizontal") > 0)
             {
+                anim.CrossFade("right", 0.25f);
                 gameObject.transform.Rotate(new Vector3(0, rotateSpeed, 0) * Time.deltaTime * (velocity / maxSpeed));
             }
+        }
+        else
+        {
+            anim.CrossFade("center", 0.25f);
         }
     }
 
