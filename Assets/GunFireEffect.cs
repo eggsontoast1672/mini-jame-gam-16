@@ -12,10 +12,11 @@ public class GunFireEffect : MonoBehaviour
     [SerializeField] private AudioSource soundEffect;
 
     private bool isPlaying;
-    public void Play()
+    public bool Play()
     {
-        if(isPlaying) return;
+        if(isPlaying) return false;
         StartCoroutine("Effect");
+        return true;
     }
     public IEnumerator Effect()
     {

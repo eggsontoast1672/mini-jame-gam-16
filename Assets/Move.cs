@@ -12,6 +12,7 @@ public class Move : MonoBehaviour
     [SerializeField] private float maxSpeed = 5;
 
     [SerializeField] private float reverseSpeed = 5;
+    [SerializeField] private float turnInefficency = 2;
     [SerializeField] private float acceleration = 2;
     [SerializeField] private float breakingForce = 2;
     [SerializeField] private AnimationCurve velocityRoationCurve;
@@ -62,6 +63,7 @@ public class Move : MonoBehaviour
                 rotationVector = new Vector3(0, rotateSpeed, 0);
             }
             gameObject.transform.Rotate(rotationVector * Time.deltaTime * velocityRationMultiplier);
+            velocity = Mathf.Lerp(velocity, 0, Time.deltaTime * breakingForce * turnInefficency);
         }
         else
         {
