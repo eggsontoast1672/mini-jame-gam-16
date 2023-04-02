@@ -18,6 +18,7 @@ public class Move : MonoBehaviour
     [SerializeField] private AnimationCurve velocityRoationCurve;
     [SerializeField] private AnimationCurve motorAudioPitchVsVelocity;
     [SerializeField] private AudioSource motorAudio;
+    private float startingHeight;
 
     [SerializeField] private Animator anim;
 
@@ -30,6 +31,7 @@ public class Move : MonoBehaviour
     {
         rigidbody = GetComponent<Rigidbody>();
         motorAudio.pitch = motorAudioPitchVsVelocity.Evaluate(velocity / maxSpeed);
+        startingHeight = transform.position.y;
     }
 
     // Update is called once per frame
@@ -37,6 +39,7 @@ public class Move : MonoBehaviour
     {
         MoveLoop();
         RotateLoop();
+        
     }
 
     void RotateLoop()
@@ -81,7 +84,8 @@ public class Move : MonoBehaviour
             }
             motorAudio.pitch = motorAudioPitchVsVelocity.Evaluate(velocity / maxSpeed);
         }
-        gameObject.transform.Translate(direction * velocity * Time.deltaTime);
+        transform.Translate(direction * velocity * Time.deltaTime);
+        transform.position = new Vector3(transform.position.x, startingHeight , transform.position.z);
     }
 }
 
