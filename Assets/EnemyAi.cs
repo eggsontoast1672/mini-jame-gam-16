@@ -12,10 +12,8 @@ public class EnemyAi : MonoBehaviour
     [SerializeField] private float letCatchUp = 1;
     [SerializeField] private Kart player;
     private Kart kart;
-    private float catchUpMultiplier;
 
     private PathFollower pathFollower;
-    // Start is called before the first frame update
     void Start()
     {
         Assert.IsNotNull(player);
@@ -23,18 +21,12 @@ public class EnemyAi : MonoBehaviour
         kart = GetComponent<Kart>();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        pathFollower.speed = -velocity * catchUpMultiplier;
-
+        if (LevelManager.Instance.State != LevelManager.GameState.Race) return;
+        var catchUpMultiplier = (1 - (player.Location - kart.Location) / letCatchUp) * 0.5f;
+        pathFollower.speed = -velocity * (catchUpMultiplier + 0.5f);
         velocity = Mathf.Lerp(velocity, maxSpeed, Time.deltaTime * acceleration);
-        
-    }
-
-    void FixedUpdate()
-    {
-        catchUpMultiplier = 1 - ((player.Location - kart.Location) / letCatchUp);
     }
 
     public void TakeHit()
