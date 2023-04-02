@@ -22,7 +22,7 @@ public class GunFireEffect : MonoBehaviour
     {
         if (isPlaying) yield break;
         isPlaying = true;
-        soundEffect.pitch = (float)(new Random().NextDouble() % 0.5 + 0.75);
+        soundEffect.pitch = (float)(new Random().NextDouble() % 0.3 + 0.85);
         soundEffect.Play();
 
         foreach (var particle in particles)

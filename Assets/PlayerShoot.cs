@@ -13,6 +13,7 @@ public class PlayerShoot : MonoBehaviour
     [SerializeField] private Transform gunAim;
     [SerializeField] private GameObject[] disableObjects;
     [SerializeField] private GunFireEffect gunFireEffect;
+    [SerializeField] private GameObject missEffect;
     [SerializeField] private GameObject hitEffect;
     [SerializeField] private float dropOff;
     private Camera cam;
@@ -29,6 +30,7 @@ public class PlayerShoot : MonoBehaviour
 
     void Update()
     {
+        if (LevelManager.Instance.State == LevelManager.GameState.Pre) return;
         if (Input.GetMouseButtonDown(0))
         {
             ShowWeapon();
@@ -68,13 +70,19 @@ public class PlayerShoot : MonoBehaviour
             var gameObject = hit.transform.gameObject;
             EnemyAi? enemyAi = gameObject.GetComponent<EnemyAi>();
             enemyAi?.TakeHit();
+
+            hitEffect.transform.position = hit.transform.position;
+            foreach (var partSys in hitEffect.GetComponentsInChildren<ParticleSystem>())
+            {
+                partSys.Play();
+            }
         }
         else
         {
             //miss effect
             var missLocation = gunTip.position + ((gunAim.position - gunTip.position).normalized * dropOff);
-            hitEffect.transform.position = missLocation + (Vector3.up * 0.15f);
-            foreach (var partSys in hitEffect.GetComponentsInChildren<ParticleSystem>())
+            missEffect.transform.position = missLocation + (Vector3.up * 0.15f);
+            foreach (var partSys in missEffect.GetComponentsInChildren<ParticleSystem>())
             {
                 partSys.Play();
             }

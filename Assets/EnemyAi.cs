@@ -23,7 +23,12 @@ public class EnemyAi : MonoBehaviour
 
     void Update()
     {
-        if (LevelManager.Instance.State != LevelManager.GameState.Race) return;
+        if (LevelManager.Instance.State != LevelManager.GameState.Race)
+        {
+            velocity = Mathf.Lerp(velocity, 0, Time.deltaTime  * 2f);
+            pathFollower.speed = velocity;
+            return;
+        }
         var catchUpMultiplier = (1 - (player.Location - kart.Location) / letCatchUp) * 0.5f;
         pathFollower.speed = -velocity * (catchUpMultiplier + 0.5f);
         velocity = Mathf.Lerp(velocity, maxSpeed, Time.deltaTime * acceleration);
@@ -31,8 +36,6 @@ public class EnemyAi : MonoBehaviour
 
     public void TakeHit()
     {
-        Debug.Log("hit");
-        velocity = Mathf.Lerp(velocity, 0, acceleration);
-        //todo effect
+        velocity = Mathf.Lerp(velocity, 0, acceleration / 4);
     }
 }
