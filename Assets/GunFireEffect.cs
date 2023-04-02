@@ -1,12 +1,15 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
-using static UnityEngine.ParticleSystem;
+using Random = System.Random;
 
 public class GunFireEffect : MonoBehaviour
 {
     [SerializeField] private GameObject muzzleFlash;
     [SerializeField] private ParticleSystem[] particles;
+    [SerializeField] private AudioSource soundEffect;
 
     private bool isPlaying;
     public void Play()
@@ -18,6 +21,8 @@ public class GunFireEffect : MonoBehaviour
     {
         if (isPlaying) yield break;
         isPlaying = true;
+        soundEffect.pitch = (float)(new Random().NextDouble() % 0.5 + 0.75);
+        soundEffect.Play();
 
         foreach (var particle in particles)
         {

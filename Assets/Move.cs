@@ -12,7 +12,6 @@ public class Move : MonoBehaviour
     [SerializeField] private float maxSpeed = 5;
 
     [SerializeField] private float reverseSpeed = 5;
-
     [SerializeField] private float acceleration = 2;
     [SerializeField] private float breakingForce = 2;
     [SerializeField] private AnimationCurve velocityRoationCurve;
